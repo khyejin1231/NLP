@@ -15,10 +15,20 @@ Utility function:
 """
 import numpy as np
 import sys
-pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-data.head()
-print(data['description'][1]) #See that there is no hyperlinks, numbers, HTML tags, URLs.
+from pybliometrics.scopus import ScopusSearch
+
+import pandas as pd
+
+search_result = ScopusSearch("KEY(artificial intelligence) AND KEY(marketing)")
+
+print("Documents found:", search_result.get_results_size())
+
+data = pd.DataFrame(search_result.results)
+data.subtypeDescription.drop_duplicates()
+
+#Conference Paper, Book and Article
+df = data.loc[data['subtypeDescription'].isin(['Article','Conference Paper','Book'])]
 
 title = data['title']
 abstract = data['description']
