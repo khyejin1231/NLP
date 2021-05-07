@@ -20,15 +20,29 @@ from pybliometrics.scopus import ScopusSearch
 
 import pandas as pd
 
-search_result = ScopusSearch("KEY(artificial intelligence) AND KEY(marketing)")
+search_result0 = ScopusSearch("KEY(artificial intelligence) AND KEY(marketing)")
+search_result1 = ScopusSearch("KEY(machine learning) AND KEY(marketing)")
 
-print("Documents found:", search_result.get_results_size())
+print("Documents found:", search_result0.get_results_size())
 
-data = pd.DataFrame(search_result.results)
-data.subtypeDescription.drop_duplicates()
+data0 = pd.DataFrame(search_result0.results)
+data1 = pd.DataFrame(search_result1.results)
+
+frames = [data0, data1]
+data = pd.concat(frames).drop_duplicates()
 
 #Conference Paper, Book and Article
 df = data.loc[data['subtypeDescription'].isin(['Article','Conference Paper','Book'])]
 
-title = data['title']
-abstract = data['description']
+#Date
+df['coverDate'].astype(str).str[0:4]
+df['coverDate'] = df['coverDate'].astype(str).str[0:4]
+df['coverDate'] = pd.to_numeric(df['coverDate'])
+df = df[df['coverDate']>=2002]
+
+#citation
+df['citedby_count'] = pd.to_numeric(df['citedby_count'])
+df = df[(df['citedby_count']>0) | (df['coverDate'] >= 2017)]
+
+title = df['title']
+abstract = df['description']
