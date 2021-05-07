@@ -13,36 +13,32 @@ Utility function:
     4. Lemmatize/Stem
     5. Other steps: Remove URLs, HTML tags, numbers
 """
-import numpy as np
-import sys
-
+# Packages
 from pybliometrics.scopus import ScopusSearch
-
 import pandas as pd
 
-search_result0 = ScopusSearch("KEY(artificial intelligence) AND KEY(marketing)")
-search_result1 = ScopusSearch("KEY(machine learning) AND KEY(marketing)")
+# Scopus search
+search_result = ScopusSearch("(TITLE-ABS-KEY(machine learning) \
+                             AND TITLE-ABS-KEY(marketing)) \
+                              OR (TITLE-ABS-KEY(artificial intelligence) \
+                               AND TITLE-ABS-KEY(marketing))")
 
-print("Documents found:", search_result0.get_results_size())
+print("Documents found:", search_result.get_results_size())
 
-data0 = pd.DataFrame(search_result0.results)
-data1 = pd.DataFrame(search_result1.results)
-
-frames = [data0, data1]
-data = pd.concat(frames).drop_duplicates()
+data = pd.DataFrame(search_result.results)
 
 #Conference Paper, Book and Article
 df = data.loc[data['subtypeDescription'].isin(['Article','Conference Paper','Book'])]
 
 #Date
-df['coverDate'].astype(str).str[0:4]
-df['coverDate'] = df['coverDate'].astype(str).str[0:4]
-df['coverDate'] = pd.to_numeric(df['coverDate'])
-df = df[df['coverDate']>=2002]
+data.coverDate = pd.to_datetime(data.coverDate)
+df = df[df['coverDate']>="2002-01-01"]
 
-#citation
+#Citation
 df['citedby_count'] = pd.to_numeric(df['citedby_count'])
-df = df[(df['citedby_count']>0) | (df['coverDate'] >= 2017)]
+
+#Keep only those articles with at least one citation OR published after 2017-01-01
+df = df[(df['citedby_count']>0) | (df['coverDate'] >= "2017-01-01")]
 
 title = df['title']
 abstract = df['description']
