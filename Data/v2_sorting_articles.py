@@ -5,13 +5,9 @@ Created on Fri May  7 22:54:34 2021
 @author: HYEJIN KIM
 About: v2. looking at top 50 journals
 """
-search_result0 = ScopusSearch("TITLE-ABS-KEY(machine learning) \
-                             OR TITLE-ABS-KEY(natural language processing) \
-                              OR TITLE-ABS-KEY(artificial intelligence) \
-                               OR TITLE-ABS-KEY(text analysis)\
-                                   OR TITLE-ABS-KEY(reinforcement learning)")
+search_result0 = ScopusSearch("TITLE-ABS-KEY(artificial intelligence)")
 
-print("Documents found:", search_result.get_results_size())
+print("Documents found:", search_result0.get_results_size())
 
 data = pd.DataFrame(search_result0.results)
 
