@@ -41,7 +41,7 @@ df = df[df['coverDate']>="2002-01-01"]
 df['citedby_count'] = pd.to_numeric(df['citedby_count'])
 
 #Keep only those articles with at least one citation OR published after 2020-01-01
-df = df[(df['citedby_count']>0) | (df['coverDate'] > "2021-01-01")]
+df = df[(df['citedby_count']>0) & (df['coverDate'] >= "2021-01-01")]
 
 title = df['title']
 abstract = df['description']
