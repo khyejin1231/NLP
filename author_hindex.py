@@ -16,7 +16,8 @@ first_author = first_author.replace({';':''}, regex = True)
 
 second_author = author.astype(str).str[12:23]
 
-au = pd.Series()
+au = []
 for i in first_author:
-    au.add(AuthorRetrieval(i).h_index)
+    print(i)
+    au.append(AuthorRetrieval(i).h_index)
     
