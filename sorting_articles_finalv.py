@@ -12,6 +12,10 @@ import pandas as pd
 search_result = ScopusSearch("(TITLE-ABS-KEY(machine learning) \
                              AND TITLE-ABS-KEY(marketing)) \
                               OR (TITLE-ABS-KEY(artificial intelligence) \
+                               AND TITLE-ABS-KEY(marketing))\
+                       OR (TITLE-ABS-KEY(deep learning) \
+                               AND TITLE-ABS-KEY(marketing))\
+                                   OR (TITLE-ABS-KEY(neural network) \
                                AND TITLE-ABS-KEY(marketing))")
 
 print("Documents found:", search_result.get_results_size())
@@ -31,7 +35,7 @@ df['citedby_count'] = pd.to_numeric(df['citedby_count'])
 #Optionally, filtering out some of the articles. We decided not to do that. 
 #Keep only those articles with at least one citation OR published after 2020-01-01
 #df = df[(df['citedby_count']>0) | (df['coverDate'] >= "2020-01-01")]
-#df = df[(df['coverDate'] <= "2021-01-01")]
+df = df[(df['coverDate'] <= "2021-06-01")]
 
 title = df['title']
 abstract = df['description']
