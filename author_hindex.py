@@ -10,14 +10,11 @@ from pybliometrics.scopus import AuthorRetrieval
 from pybliometrics.scopus import SerialTitle
 from pybliometrics.scopus import exception
 from multiprocessing import Pool
-import author
+# import author
 from pybliometrics.scopus import exception
 
-#unpickled_df = pd.read_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
-unpickled_df = pd.read_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
-
-
-print(df['author_ids'])
+# df = pd.read_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
+df = pd.read_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
 
 author = df['author_ids']
 
@@ -41,12 +38,13 @@ for i in range(len(df)):
         except TypeError:
             first_author.iloc[i,1] = pd.NA
             
-# Loop to populate the columns h_index with the h-index dowloaded from Scopus
-if __name__ == '__main__':
-   
-    pool = Pool(7)         
-    pool.map(author, l)  # Create a multiprocessing Pool
-
+# =============================================================================
+# # Loop to populate the columns h_index with the h-index dowloaded from Scopus
+# if __name__ == '__main__':
+#    
+#     pool = Pool(7)         
+#     pool.map(author, l)  # Create a multiprocessing Pool
+# =============================================================================
 
 # Merging the h index with the dataframe
 df = pd.merge(df, first_author.h_index, left_index=True, right_index=True)

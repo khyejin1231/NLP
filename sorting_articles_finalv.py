@@ -41,7 +41,7 @@ title = df['title']
 abstract = df['description']
 
 import pickle
-df.to_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
+df.to_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
 #with open("../Users/amt/Documents/0. MSc Tinbergen/block 5. NLP/extracted_data.pkl", ‘wb’) as f:
     #pickle.dump(df, f)
     
