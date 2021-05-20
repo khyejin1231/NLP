@@ -13,8 +13,8 @@ from multiprocessing import Pool
 # import author
 from pybliometrics.scopus import exception
 
-# df = pd.read_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
-df = pd.read_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
+df = pd.read_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
+# df = pd.read_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
 
 author = df['author_ids']
 
@@ -51,32 +51,37 @@ df = pd.merge(df, first_author.h_index, left_index=True, right_index=True)
 
 # Check the Nan
 df[pd.isna(df.h_index)]
+df = df[df.h_index.notna()]
 
 # Convert issn column to dataframe
 df = df[df['issn'].notna()]
 SJR = pd.DataFrame(df.issn)
 
+# =============================================================================
+# 
+# # Add a new column of None
+# SJR['score'] = [None] * SJR.shape[0]
+# 
+# SJR
+# # Loop to fill in the column score with the SNIP score
+# 
+# for i in range(SJR.shape[0]):
+#     print(SJR.iloc[i,0])
+#     print(SerialTitle(SJR.iloc[i,0]).sjrlist)
+#     try: 
+#         SJR.iloc[i,1] = (SerialTitle(SJR.iloc[i,0]).sjrlist)
+#     except ValueError:
+#         SJR.iloc[i,1] = pd.NA
+#     except TypeError:
+#         SJR.iloc[i,1] = pd.NA
+#     except exception.Scopus404Error:
+#         SJR.iloc[i,1] = pd.NA
+# 
+# 
+# df = pd.merge(df, SJR['score'], left_index=True, right_index=True)
+# 
+# df = df[df['author_ids'].notna()]
+# =============================================================================
 
-# Add a new column of None
-SJR['score'] = [None] * SJR.shape[0]
-
-SJR
-# Loop to fill in the column score with the SNIP score
-
-for i in range(SJR.shape[0]):
-    print(SJR.iloc[i,0])
-    print(SerialTitle(SJR.iloc[i,0]).sjrlist)
-    try: 
-        SJR.iloc[i,1] = (SerialTitle(SJR.iloc[i,0]).sjrlist)
-    except ValueError:
-        SJR.iloc[i,1] = pd.NA
-    except TypeError:
-        SJR.iloc[i,1] = pd.NA
-    except exception.Scopus404Error:
-        SJR.iloc[i,1] = pd.NA
-
-
-df = pd.merge(df, SJR['score'], left_index=True, right_index=True)
-
-df = df[df['author_ids'].notna()]
-df.to_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
+# df.to_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
+df.to_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
