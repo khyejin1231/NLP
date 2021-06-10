@@ -7,13 +7,16 @@ We are interested in title, keywords and abstract
 # Packages
 from pybliometrics.scopus import ScopusSearch
 import pandas as pd
-from pybliometrics.scopus import AuthorRetrieval
-from scholarly import scholarly
-from scholarly import scholarly, ProxyGenerator
 
-pg = ProxyGenerator()
-pg.FreeProxies()
-scholarly.use_proxy(pg)
+# =============================================================================
+# from pybliometrics.scopus import AuthorRetrieval
+# from scholarly import scholarly
+# from scholarly import scholarly, ProxyGenerator
+# 
+# pg = ProxyGenerator()
+# pg.FreeProxies()
+# scholarly.use_proxy(pg)
+# =============================================================================
 
 
 # from pybliometrics.scopus import SerialTitle
@@ -67,15 +70,18 @@ df3 = pd.DataFrame(search_result3.results)
 df4 = pd.DataFrame(search_result4.results)
 data = pd.concat([df1, df2, df3, df4])
 data.drop_duplicates(subset ="title",
-                     keep = False, inplace = True)
+                     keep = False, inplace = True) 
+
+# After dropping duplicates we have 13,000 obs
 df = data
 
 # Articles only; no conference paper or books or others
 df = data.loc[data['subtypeDescription'].isin(['Article'])]
 
+# taking only articles we have 5,000 obs
 #Date
 data.coverDate = pd.to_datetime(data.coverDate)
-df = df[df['coverDate']>="1950-01-01"]
+df = df[df['coverDate']>="1950-01-01"] # This does not drop any obs
 
 #Citation
 df['citedby_count'] = pd.to_numeric(df['citedby_count'])
@@ -83,7 +89,7 @@ df['citedby_count'] = pd.to_numeric(df['citedby_count'])
 #Optionally, filtering out some of the articles. We decided not to do that. 
 #Keep only those articles with at least one citation OR published after 2020-01-01
 #df = df[(df['citedby_count']>0) | (df['coverDate'] >= "2020-01-01")]
-df = df[(df['coverDate'] <= "2020-06-01")]
+df = df[(df['coverDate'] <= "2020-06-01")] # here we get to 4,300
 
 title = df['title']
 abstract = df['description']
@@ -91,22 +97,24 @@ abstract = df['description']
 author = df.author_names.str.split(';', expand=True)
 year = pd.DatetimeIndex(df['coverDate']).year
 year = pd.DataFrame(year)
-author = pd.concat([year, author.reset_index(drop=True)], axis = 1)
-result = []
-author[0][1]
-
-for i in range(1672, len(author)):
-    print(i)
-    year = author['coverDate'][i] - 1
-    try:
-        search_query = scholarly.search_author(author[0][i])
-        author1 = next(search_query)
-        result1 = scholarly.fill(author1, sections=['counts']).get('cites_per_year').get(year)
-        result.append(result1)
-    except StopIteration:
-        result.append(None)
-    except TypeError:
-        result.append(None)
+# =============================================================================
+# author = pd.concat([year, author.reset_index(drop=True)], axis = 1)
+# result = []
+# author[0][1]
+# 
+# for i in range(1672, len(author)):
+#     print(i)
+#     year = author['coverDate'][i] - 1
+#     try:
+#         search_query = scholarly.search_author(author[0][i])
+#         author1 = next(search_query)
+#         result1 = scholarly.fill(author1, sections=['counts']).get('cites_per_year').get(year)
+#         result.append(result1)
+#     except StopIteration:
+#         result.append(None)
+#     except TypeError:
+#         result.append(None)
+# =============================================================================
         
 
 #654 it stopped
@@ -121,16 +129,18 @@ for i in range(1672, len(author)):
 #     pool.map(author, l)  # Create a multiprocessing Pool
 # =============================================================================
 
-# Merging the h index with the dataframe
-df = pd.merge(df, first_author.h_index, left_index=True, right_index=True)
-
-# Check the Nan
-#df[pd.isna(df.h_index)]
-#df = df[df.h_index.notna()]
-
-# Convert issn column to dataframe
-df = df[df['issn'].notna()]
-SJR = pd.DataFrame(df.issn)
+# =============================================================================
+# # Merging the h index with the dataframe
+# df = pd.merge(df, first_author.h_index, left_index=True, right_index=True)
+# 
+# # Check the Nan
+# #df[pd.isna(df.h_index)]
+# #df = df[df.h_index.notna()]
+# 
+# # Convert issn column to dataframe
+# df = df[df['issn'].notna()]
+# SJR = pd.DataFrame(df.issn)
+# =============================================================================
 
 # =============================================================================
 # 
@@ -158,5 +168,5 @@ SJR = pd.DataFrame(df.issn)
 # df = df[df['author_ids'].notna()]
 # =============================================================================
 
-df.to_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
-#df.to_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
+#df.to_pickle("C:/Users/USER/Documents/Python/NLP/extracted_data.pkl")
+df.to_pickle(r"C:\Users\marco\Desktop\NLP\extracted_data.pkl")
